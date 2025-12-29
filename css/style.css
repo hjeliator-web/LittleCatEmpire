@@ -1,0 +1,38 @@
+body {
+  margin:0;
+  background:#0e1222;
+  color:#fff;
+  font-family:Arial;
+}
+.top {
+  padding:12px;
+  background:#181c3a;
+  text-align:center;
+}
+.screen { display:none; padding:15px; }
+.screen.active { display:block; }
+.cat {
+  width:200px;
+  display:block;
+  margin:20px auto;
+}
+.nav {
+  position:fixed;
+  bottom:0;
+  width:100%;
+  display:flex;
+  background:#181c3a;
+}
+.nav button {
+  flex:1;
+  border:none;
+  background:none;
+  color:#fff;
+  padding:12px;
+}
+.card {
+  background:#181c3a;
+  padding:12px;
+  border-radius:12px;
+  margin-bottom:10px;
+}
