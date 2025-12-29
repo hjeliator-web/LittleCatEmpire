@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>BabyCat Empire</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+<style>
+body{
+    margin:0;
+    font-family:Arial, sans-serif;
+    background:#0f1220;
+    color:#fff;
+}
+.header{
+    padding:12px;
+    text-align:center;
+    background:#1c1f3a;
+    font-weight:bold;
+}
+.balance{
+    font-size:22px;
+}
+.screen{
+    display:none;
+    padding:15px;
+}
+.screen.active{
+    display:block;
+}
+.cat{
+    width:200px;
+    margin:20px auto;
+    display:block;
+    cursor:pointer;
+    transition:transform .08s;
+}
+.cat:active{transform:scale(.92);}
+.stats{
+    display:flex;
+    justify-content:space-between;
+    margin:10px 0;
+}
+.card{
+    background:#1c1f3a;
+    padding:10px;
+    border-radius:12px;
+    width:48%;
+    text-align:center;
+}
+.btn{
+    background:#ff7aa2;
+    padding:12px;
+    border:none;
+    border-radius:14px;
+    color:#fff;
+    font-size:16px;
+    width:100%;
+    margin-top:10px;
+}
+.nav{
+    position:fixed;
+    bottom:0;
+    width:100%;
+    display:flex;
+    background:#1c1f3a;
+}
+.nav button{
+    flex:1;
+    background:none;
+    border:none;
+    color:#fff;
+    padding:10px;
+}
+.upgrade{
+    background:#1c1f3a;
+    padding:12px;
+    border-radius:14px;
+    margin-bottom:10px;
+}
+.small{font-size:12px;color:#aaa;}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    🐱 BabyCat Empire  
+    <div class="balance">💰 <span id="coins">0</span></div>
+</div>
+
+<!-- MINE -->
+<div id="mine" class="screen active">
+    <img src="https://i.imgur.com/3ZQ3Z5E.png" class="cat" onclick="tap()">
+
+    <div class="stats">
+        <div class="card">⚡ Energy<br><span id="energy">100</span></div>
+        <div class="card">💥 Tap<br>+<span id="tapPower">1</span></div>
+    </div>
+
+    <div class="card">💼 Profit/hour<br><span id="pph">0</span></div>
+</div>
+
+<!-- UPGRADES -->
+<div id="upgrades" class="screen">
+    <div class="upgrade">
+        <b>🐾 Strong Paws</b><br>
+        <span class="small">Increase tap power</span><br>
+        Cost: <span id="tapCost">100</span>
+        <button class="btn" onclick="upgradeTap()">Upgrade</button>
+    </div>
+
+    <div class="upgrade">
+        <b>🏭 Cat Factory</b><br>
+        <span class="small">Increase profit per hour</span><br>
+        Cost: <span id="pphCost">200</span>
+        <button class="btn" onclick="upgradePPH()">Upgrade</button>
+    </div>
+</div>
+
+<!-- TASKS -->
+<div id="tasks" class="screen">
+    <div class="upgrade">
+        Join Telegram Channel  
+        <button class="btn" onclick="completeTask(500)">Claim 500</button>
+    </div>
+    <div class="upgrade">
+        Follow Twitter  
+        <button class="btn" onclick="completeTask(700)">Claim 700</button>
+    </div>
+</div>
+
+<!-- REFERRAL -->
+<div id="ref" class="screen">
+    <div class="upgrade">
+        👥 Invite friends  
+        <p class="small">Earn 1000 per invite</p>
+        <button class="btn" onclick="fakeInvite()">Invite</button>
+    </div>
+</div>
+
+<!-- AIRDROP -->
+<div id="airdrop" class="screen">
+    <div class="upgrade">
+        🚀 Airdrop Coming Soon  
+        <p class="small">Your activity matters</p>
+    </div>
+</div>
+
+<!-- NAV -->
+<div class="nav">
+    <button onclick="show('mine')">Mine</button>
+    <button onclick="show('upgrades')">Upgrades</button>
+    <button onclick="show('tasks')">Tasks</button>
+    <button onclick="show('ref')">Friends</button>
+    <button onclick="show('airdrop')">Airdrop</button>
+</div>
+
+<script>
+const tg = Telegram.WebApp;
+tg.expand();
+
+let data = JSON.parse(localStorage.getItem("babycat")) || {
+    coins:0,
+    energy:100,
+    tapPower:1,
+    pph:0,
+    lastTime:Date.now()
+};
+
+function save(){
+    localStorage.setItem("babycat",JSON.stringify(data));
+}
+
+function update(){
+    document.getElementById("coins").innerText = Math.floor(data.coins);
+    document.getElementById("energy").innerText = data.energy;
+    document.getElementById("tapPower").innerText = data.tapPower;
+    document.getElementById("pph").innerText = data.pph;
+    document.getElementById("tapCost").innerText = data.tapPower*100;
+    document.getElementById("pphCost").innerText = (data.pph+1)*200;
+}
+
+function tap(){
+    if(data.energy<=0) return;
+    data.coins += data.tapPower;
+    data.energy--;
+    save(); update();
+}
+
+function upgradeTap(){
+    let cost = data.tapPower*100;
+    if(data.coins>=cost){
+        data.coins-=cost;
+        data.tapPower++;
+        save(); update();
+    }
+}
+
+function upgradePPH(){
+    let cost = (data.pph+1)*200;
+    if(data.coins>=cost){
+        data.coins-=cost;
+        data.pph+=5;
+        save(); update();
+    }
+}
+
+function passive(){
+    let now = Date.now();
+    let diff = (now-data.lastTime)/3600000;
+    data.coins += diff*data.pph;
+    data.lastTime = now;
+}
+
+function completeTask(r){
+    data.coins+=r;
+    save(); update();
+    tg.showAlert("Reward claimed!");
+}
+
+function fakeInvite(){
+    data.coins+=1000;
+    save(); update();
+}
+
+function show(id){
+    document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+    document.getElementById(id).classList.add("active");
+}
+
+setInterval(()=>{
+    if(data.energy<100) data.energy++;
+    passive();
+    save(); update();
+},3000);
+
+passive();
+update();
+</script>
+
+</body>
+</html>
