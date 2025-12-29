@@ -8,3 +8,7 @@ Your ID: ${user?.id}
 <br>t.me/YOUR_BOT?start=${user?.id}
 </div>
 `;
+const startParam = Telegram.WebApp.initDataUnsafe.start_param;
+if (startParam && startParam !== user.id) {
+  // save referral once
+}
