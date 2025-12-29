@@ -33,6 +33,14 @@ function updateUI() {
   document.getElementById("energy").innerText = game.energy;
   document.getElementById("tapPower").innerText = game.tapPower;
 }
+function applyBoosts() {
+  if (Date.now() < game.boostTapUntil) {
+    game.tapPower = 2;
+  } else {
+    game.tapPower = 1;
+    game.boostTapUntil = 0;
+  }
+}
 
 /* ---------------- PASSIVE INCOME ---------------- */
 function passiveIncome() {
@@ -50,12 +58,15 @@ function show(id) {
 
 /* ---------------- GAME LOOP ---------------- */
 setInterval(async () => {
+  
   if (game.energy < CONFIG.maxEnergy) {
     game.energy += CONFIG.energyRegen;
   }
+applyBoosts();
 
   passiveIncome();
   updateUI();
+  
 
   await saveUser({
     coins: game.coins,
