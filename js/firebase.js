@@ -2,12 +2,13 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/fireba
 import { getFirestore, doc, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "PASTE_YOURS",
-  authDomain: "PASTE_YOURS",
-  projectId: "PASTE_YOURS",
-  storageBucket: "PASTE_YOURS",
-  messagingSenderId: "PASTE_YOURS",
-  appId: "PASTE_YOURS"
+   apiKey: "AIzaSyBFj0UrhoXhRzXb_ygFlDR_hufsiJ6Xdkw",
+  authDomain: "babycatempire.firebaseapp.com",
+  projectId: "babycatempire",
+  storageBucket: "babycatempire.firebasestorage.app",
+  messagingSenderId: "19401101304",
+  appId: "1:19401101304:web:f025966ff0ceb6f59d900d",
+
 };
 
 const app = initializeApp(firebaseConfig);
