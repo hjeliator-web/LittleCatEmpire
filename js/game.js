@@ -64,3 +64,4 @@ setInterval(async () => {
     pph: game.pph
   });
 }, CONFIG.energyTime);
+export { game, updateUI };
