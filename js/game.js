@@ -1,3 +1,5 @@
+loadUser();
+
 const tg = Telegram.WebApp;
 tg.expand();
 
@@ -37,5 +39,12 @@ setInterval(() => {
   save();
   updateUI();
 }, CONFIG.energyTime);
+
+saveUser({
+  coins: game.coins,
+  tapPower: game.tapPower,
+  pph: game.pph
+});
+
 
 updateUI();
