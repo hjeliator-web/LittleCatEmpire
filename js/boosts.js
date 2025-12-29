@@ -1,14 +1,31 @@
+import { saveUser } from "./firebase.js";
+import { game, updateUI } from "./game.js";
+
 const boostsDiv = document.getElementById("boosts");
 
 boostsDiv.innerHTML = `
-<div class="card">
-⚡ Double Tap (30s)
-<button onclick="boostTap()">Activate</button>
-</div>
+  <div class="card">
+    ⚡ <b>Double Tap</b> (30 seconds)<br>
+    <button id="boostBtn">Activate</button>
+  </div>
 `;
 
-function boostTap(){
-  let old = game.tapPower;
-  game.tapPower *= 2;
-  setTimeout(()=>game.tapPower=old,30000);
-}
+document.getElementById("boostBtn").onclick = async () => {
+  const now = Date.now();
+
+  // Prevent stacking
+  if (now < game.boostTapUntil) return alert("Boost already active!");
+
+  // Optional cost
+  if (game.coins < 100) return alert("Not enough coins!");
+
+  game.coins -= 100;
+  game.boostTapUntil = now + 30000;
+
+  await saveUser({
+    coins: game.coins,
+    boostTapUntil: game.boostTapUntil
+  });
+
+  updateUI();
+};
